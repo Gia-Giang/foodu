@@ -2,39 +2,49 @@ export const data: any = {
   error: false,
   loading: true,
   listData: [],
+  myCart: [],
+  listOrder: [],
   data: {
     foodList: [
       {
         name: 'Hamburger',
         icon: 'https://vi.seaicons.com/wp-content/uploads/2017/03/hamburger-icon-3.png',
+        categoryFood: 'hamburger',
       },
       {
         name: 'Pizza',
         icon: 'https://vi.seaicons.com/wp-content/uploads/2017/03/pizza-slice-icon.png',
+        categoryFood: 'pizza',
       },
       {
         name: 'Phở bò',
         icon: 'https://www.pho24.com.vn/wp-content/uploads/2018/05/600x328px_MENU_SLIDE-BIG-PHO_MELAMIN-01.png',
+        categoryFood: 'noodles',
       },
       {
         name: 'Thịt quay',
         icon: 'https://genshin.honeyhunterworld.com/img/i_1102_3.webp',
+        categoryFood: 'meat',
       },
       {
         name: 'Rau xanh',
         icon: 'https://cdn.pixabay.com/photo/2014/12/22/00/05/green-576756_1280.png',
+        categoryFood: 'vegetable',
       },
       {
         name: 'Bánh kem',
         icon: 'https://findicons.com/files/icons/346/sweet/128/cake2.png',
+        categoryFood: 'cake',
       },
       {
         name: 'Bia',
         icon: 'https://vi.seaicons.com/wp-content/uploads/2017/03/beer-icon.png',
+        categoryFood: 'bear',
       },
       {
         name: 'Khác',
         icon: 'https://cdn-icons-png.flaticon.com/512/254/254032.png',
+        categoryFood: 'more',
       },
     ],
     outstandingFood: [
@@ -80,4 +90,5 @@ export const data: any = {
       },
     ],
   },
+  listDataOutStandingFood: [],
 };

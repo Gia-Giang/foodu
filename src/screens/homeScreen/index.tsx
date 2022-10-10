@@ -19,7 +19,13 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import * as Animated from 'react-native-animated-spinkit';
 
 import {GET_DATA, CHANGE_HEART_FOOD} from '../../reduxs/contains';
-import {actionGetData, actionChangeHeartFood} from '../../reduxs/actions';
+import {
+  actionGetData,
+  actionChangeHeartFood,
+  actionChosseOutStandingFood,
+} from '../../reduxs/actions';
+import FlatLists from '../../components/FlatList';
+import RenderFoodRecommended from '../../components/renderFoodRecommended';
 import {styles} from './style';
 
 const HomeScreen = ({navigation, params}: any) => {
@@ -28,120 +34,10 @@ const HomeScreen = ({navigation, params}: any) => {
   }, []);
   const selector = useSelector((state: any) => ({
     loading: state.data.loading,
-    data: state.data.data,
-    listData: state.data.listData,
+    foodList: state.data?.foodList,
   }));
   const dispatch = useDispatch();
-  const [idFoodRecommended, setIdFoodRecommended] = useState<any>(-1);
-  const [idFood, setIdFood] = useState<string>('');
-  const renderFoodRecommended = useCallback(
-    ({item, index}: any) => {
-      return (
-        <TouchableOpacity
-          key={index}
-          style={[
-            styles.foodRecommended,
-            idFoodRecommended == index && {backgroundColor: '#1BAC4B'},
-          ]}
-          onPress={() => setIdFoodRecommended(index)}>
-          <Image
-            style={{width: 27, height: 27, marginRight: 5}}
-            source={{
-              uri: item.icon,
-            }}
-          />
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: idFoodRecommended == index ? 'white' : '#1BAC4B',
-            }}>
-            {item.name}
-          </Text>
-        </TouchableOpacity>
-      );
-    },
-    [idFoodRecommended],
-  );
-  const FoodRecommended = () => {
-    useMemo(() => {
-      (a: any) => console.log(a);
-    }, [idFoodRecommended]);
-  };
-  const renderAllFood = (listData: []) => {
-    return listData.map((item: any) => {
-      return (
-        <View
-          key={item.id}
-          style={{
-            height: 170,
-            backgroundColor: 'white',
-            marginBottom: 30,
-            borderRadius: 25,
-            padding: 20,
-            flexDirection: 'row',
-          }}>
-          <Image
-            style={{
-              width: 150,
-              height: '100%',
-              backgroundColor: 'blue',
-              borderRadius: 25,
-            }}
-            source={{uri: item.uriImg}}
-          />
-          <View
-            style={{
-              flex: 1,
-              paddingLeft: 10,
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-            }}>
-            <Text
-              numberOfLines={2}
-              style={{fontSize: 16, fontWeight: 'bold', color: 'black'}}>
-              {item.nameFood}
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text>{item.distance} | </Text>
-              <Andesign name="star" color="orange" size={16} />
-              <Text> {item.assess} </Text>
-              <Text>({item.reviewCount})</Text>
-            </View>
-            <View>
-              <Text style={styles.priceFood}>{item.price}</Text>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <MaterialIcons
-                name="delivery-dining"
-                color={'#1BAC4B'}
-                size={20}
-              />
-              <Text>{item.shippingCost}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() =>
-                dispatch(
-                  actionChangeHeartFood({
-                    id: item.id,
-                    dataFood: item,
-                  }),
-                )
-              }
-              style={{position: 'absolute', right: 0, bottom: 10}}>
-              {item.isHeart ? (
-                <Ionicons name="heart" size={30} color="#FE5F72" />
-              ) : (
-                <Ionicons name="heart-outline" size={30} color="#FE5F72" />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
-    });
-  };
-  const AllFood = useMemo(() => {
-    return renderAllFood(selector?.listData);
-  }, [selector]);
+
   const renderTitle = (title: string) => {
     return (
       <View style={styles.wrapperTitle}>
@@ -156,6 +52,10 @@ const HomeScreen = ({navigation, params}: any) => {
       </View>
     );
   };
+
+  const chooseOutStanding = useCallback(async (nameOutStandingFood: any) => {
+    await dispatch(actionChosseOutStandingFood(nameOutStandingFood));
+  }, []);
   return (
     <ScrollView
       style={styles.container}
@@ -182,7 +82,9 @@ const HomeScreen = ({navigation, params}: any) => {
               <View style={styles.isNoti} />
             </View>
             <View style={styles.noti}>
-              <Feather name="shopping-bag" size={30} color={'black'} />
+              <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+                <Feather name="shopping-bag" size={30} color={'black'} />
+              </TouchableOpacity>
               <View style={styles.isNoti} />
             </View>
           </View>
@@ -209,7 +111,7 @@ const HomeScreen = ({navigation, params}: any) => {
         </View>
 
         <View style={styles.iconFoodList}>
-          {selector?.data?.foodList?.map((item: any, index: any) => {
+          {selector?.foodList?.map((item: any, index: any) => {
             return (
               <TouchableOpacity style={styles.iconFood} key={index}>
                 <Image
@@ -229,103 +131,18 @@ const HomeScreen = ({navigation, params}: any) => {
         {renderTitle('Món ăn nổi bật')}
       </View>
       <View style={{flex: 1}}>
-        <FlatList
-          contentContainerStyle={{marginTop: 20, paddingLeft: 15}}
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          data={selector?.data?.outstandingFood}
-          renderItem={({item, index}) => {
-            return (
-              <View key={index} style={styles.food}>
-                <Image
-                  resizeMode="cover"
-                  style={styles.imgFood}
-                  source={{
-                    uri: item.img,
-                  }}
-                />
-                <Text style={styles.nameFood}>{item.name}</Text>
-                <View style={{flexDirection: 'row'}}>
-                  <Text>{item.distance} | </Text>
-                  <Andesign name="star" color="orange" size={16} />
-                  <Text> {item.assess} </Text>
-                  <Text>({item.reviewCount})</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: 5,
-                  }}>
-                  <Text style={styles.priceFood}>{item.price}</Text>
-                  <Text> | </Text>
-                  <MaterialIcons
-                    name="delivery-dining"
-                    color={'#1BAC4B'}
-                    size={20}
-                  />
-                  <Text>{item.shippingCost}</Text>
-                  <TouchableOpacity>
-                    {idFood == item.img && item.heart ? (
-                      <Ionicons name="heart" size={20} color="#FE5F72" />
-                    ) : (
-                      <Ionicons
-                        name="heart-outline"
-                        size={20}
-                        color="#FE5F72"
-                      />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            );
-          }}
-        />
+        <FlatLists horizontal={false} navigation={navigation} />
       </View>
       <View style={{paddingHorizontal: 15}}>
         {renderTitle('Món ăn đề xuất')}
       </View>
       <View style={styles.listRecommended}>
-        <FlatList
-          contentContainerStyle={{paddingLeft: 15}}
-          ListHeaderComponent={() => (
-            <TouchableOpacity
-              onPress={() => setIdFoodRecommended(-1)}
-              style={[
-                styles.foodRecommended,
-                {
-                  backgroundColor:
-                    idFoodRecommended == -1 ? '#1BAC4B' : 'white',
-                },
-              ]}>
-              <View
-                style={{
-                  width: 27,
-                  height: 27,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    color: idFoodRecommended == -1 ? 'white' : '1BAC4B',
-                  }}>
-                  All
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          data={selector?.data?.foodList}
-          renderItem={renderFoodRecommended}
-        />
+        <RenderFoodRecommended chooseOutStanding={chooseOutStanding} />
       </View>
       <View
         style={{paddingHorizontal: 15, marginTop: 30, alignItems: 'center'}}>
         {!selector.loading ? (
-          AllFood
+          <FlatLists navigation={navigation} />
         ) : (
           <Animated.CircleFade size={40} color="#1BAC4B" />
         )}

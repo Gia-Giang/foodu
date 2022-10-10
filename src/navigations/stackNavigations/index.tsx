@@ -9,6 +9,8 @@ import WellcomeScreen from '../../screens/WellcomeScreen';
 import SliderWellcome from '../../screens/sliderWellcome';
 import LoginScreen from '../../screens/loginScreen';
 import InfomationUserScreen from '../../screens/InfomationUserScreen';
+import DetailFoodScreen from '../../screens/DetailFoodScreen';
+import MyCart from '../../screens/MyCart';
 import MyBottom from '../bottomNavigations';
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +29,8 @@ const MyStack = () => {
         <Stack.Screen name="WellcomeScreen" component={WellcomeScreen} />
         <Stack.Screen name="SliderWellcome" component={SliderWellcome} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="MyCart" component={MyCart} />
+        <Stack.Screen name="DetailFoodScreen" component={DetailFoodScreen} />
         <Stack.Screen
           name="InfomationUserScreen"
           component={InfomationUserScreen}
