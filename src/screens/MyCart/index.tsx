@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
@@ -15,23 +15,38 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SwipeListView} from 'react-native-swipe-list-view';
 
 import ModalNoti from '../../components/ModalNoti';
+import ModalConfig from '../../components/ModalConfig';
 import {actionDeleteFoodMyCart} from '../../reduxs/actions';
+import Nodata from '../../components/Nodata';
 import {styles} from './style';
 
 const MyCart = ({navigation}: any) => {
   const [visiable, setVisiable] = useState<boolean>(false);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [visiableModal, setVisiableModal] = useState<boolean>(false);
+  const [itemFood, setItemFood] = useState<any>('');
   const selector = useSelector((state: any) =>
     state.data.myCart.map((item: any) => ({...item, key: item.id})),
   );
   const dispatch = useDispatch();
-  const onSwipeValueChange = async ({key, value}: any) => {
-    if (-value > Dimensions.get('window').width / 2) {
-      setVisiable(true);
-      await dispatch(actionDeleteFoodMyCart(key));
-      setVisiable(false);
-    }
-  };
+  const onSwipeValueChange = useCallback(
+    async ({key, value}: any) => {
+      if (-value > Dimensions.get('window').width / 4) {
+        setItemFood(key);
+        setVisiableModal(true);
+      }
+    },
+    [visiableModal],
+  );
+  const handelDeleteSuccess = useCallback(async (key: any) => {
+    setVisiable(true);
+    await dispatch(actionDeleteFoodMyCart(key));
+    setVisiable(false);
+    setVisiableModal(false);
+  }, []);
+  const handelClose = useCallback(() => {
+    setVisiableModal(false);
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -50,6 +65,7 @@ const MyCart = ({navigation}: any) => {
         </View>
         <Entypo name="dots-three-horizontal" size={30} color="black" />
       </View>
+      {selector.length <= 0 && <Nodata />}
       <SwipeListView
         onSwipeValueChange={onSwipeValueChange}
         contentContainerStyle={{paddingHorizontal: 15, marginTop: 20}}
@@ -89,6 +105,12 @@ const MyCart = ({navigation}: any) => {
         rightOpenValue={-80}
       />
       <ModalNoti text="Đã xóa thành công" visiable={visiable} />
+      <ModalConfig
+        item={itemFood}
+        visible={visiableModal}
+        handelDeleteSuccess={handelDeleteSuccess}
+        handelClose={handelClose}
+      />
     </View>
   );
 };

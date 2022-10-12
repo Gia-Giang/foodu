@@ -16,6 +16,7 @@ import {
   LIST_ORDER_SUCCESS,
   ADD_FOOD_ORDER,
   REMOVE_FOOD_ORDER,
+  ORDER_FOOD,
 } from '../contains';
 
 const actionGetData = () => ({
@@ -94,6 +95,11 @@ const actionRemoveOrder = (payload: any) => ({
   payload,
 });
 
+const actionOrderFood = (payload: any) => ({
+  type: ORDER_FOOD,
+  payload,
+});
+
 export {
   actionGetData,
   actionGetDataDefail,
@@ -112,4 +118,5 @@ export {
   actionListOrderSuccess,
   actionAddOrder,
   actionRemoveOrder,
+  actionOrderFood,
 };

@@ -12,6 +12,8 @@ import InfomationUserScreen from '../../screens/InfomationUserScreen';
 import DetailFoodScreen from '../../screens/DetailFoodScreen';
 import MyCart from '../../screens/MyCart';
 import MyBottom from '../bottomNavigations';
+import FirstRoute from '../../screens/TabViewScreen/FirstRoute';
+import OrderScreen from '../../screens/OrderScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +37,7 @@ const MyStack = () => {
           name="InfomationUserScreen"
           component={InfomationUserScreen}
         />
+        <Stack.Screen name="OrderScreen" component={OrderScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

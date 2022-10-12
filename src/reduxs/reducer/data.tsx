@@ -4,6 +4,7 @@ export const data: any = {
   listData: [],
   myCart: [],
   listOrder: [],
+  listOrderTransport: [],
   data: {
     foodList: [
       {

@@ -24,6 +24,8 @@
     "react-native-fast-image": "^8.6.1",
     "react-native-gesture-handler": "^2.6.0",
     "react-native-image-picker": "^4.10.0",
+    "react-native-image-viewer": "^0.0.3",
+    "react-native-lightbox": "^0.8.1",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-pager-view": "^6.0.0",
     "react-native-safe-area-context": "^4.3.3",

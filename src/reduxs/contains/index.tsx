@@ -22,3 +22,4 @@ export const LIST_ORDER_SUCCESS = 'LIST_ORDER_SUCCESS';
 
 export const ADD_FOOD_ORDER = 'ADD_FOOD_ORDER';
 export const REMOVE_FOOD_ORDER = 'REMOVE_FOOD_ORDER';
+export const ORDER_FOOD = 'ORDER_FOOD';

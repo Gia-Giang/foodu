@@ -62,4 +62,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  totalPayment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  orderWrapper: {
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnOrder: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1BAC4B',
+    width: '90%',
+    borderRadius: 30,
+    elevation: 2,
+  },
 });

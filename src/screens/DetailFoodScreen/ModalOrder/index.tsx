@@ -9,21 +9,40 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useSelector, useDispatch} from 'react-redux';
+import ModalConfig from '../../../components/ModalConfig';
 import {Color} from '../../../feather/Color';
-import {actionAddOrder, actionRemoveOrder} from '../../../reduxs/actions';
+import {
+  actionAddOrder,
+  actionRemoveOrder,
+  actionOrderFood,
+  actionDeleteFoodMyCart,
+} from '../../../reduxs/actions';
 import {styles} from './style';
 
 interface Props {
   handelAddFoodOrder?: () => void;
-  onPress?: (() => void) | undefined;
+  onPress?: (() => void) | any;
   visible: boolean;
+  navigation: any;
 }
-const ModalOrder = ({onPress, visible}: Props) => {
+const ModalOrder = ({onPress, visible, navigation}: Props) => {
+  const [visiable, setVisiable] = useState<boolean>(false);
+  const [itemFood, setItemFood] = useState<any>('');
   const selector = useSelector((state: any) => state.data.listOrder);
   const dispatch = useDispatch();
   const ref: any = useRef();
   const [amount, setAmount] = useState<any>({});
+  const renderTotal = useMemo(() => {
+    const total = selector.reduce((first: any, last: any) => {
+      const asd = last?.price.split('.');
+      const zxc = Number(asd[0]) * Number(last.repeat);
+      return first + zxc;
+    }, 0);
+    const ConverTotal =
+      (total * 1000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VND';
 
+    return ConverTotal;
+  }, [selector]);
   const renderListOrder = useMemo(() => {
     return selector.map((item: any, index: any) => {
       return (
@@ -70,7 +89,9 @@ const ModalOrder = ({onPress, visible}: Props) => {
       if (method == 'add') {
         dispatch(actionAddOrder(title));
       } else if (method == 'minus') {
-        if (title?.repeat <= 0) {
+        if (title?.repeat <= 1) {
+          setItemFood(title);
+          setVisiable(true);
           return;
         }
         dispatch(actionRemoveOrder(title));
@@ -78,6 +99,15 @@ const ModalOrder = ({onPress, visible}: Props) => {
     },
     [amount],
   );
+  const handelOrderFood = () => {
+    dispatch(actionOrderFood(selector));
+    onPress();
+    navigation.navigate('OrderScreen');
+  };
+  const handelDeleteSuccess = useCallback(async (key: any) => {
+    setVisiable(false);
+    await dispatch(actionDeleteFoodMyCart(key.id));
+  }, []);
   return (
     <Modal visible={visible} transparent animationType="slide" ref={ref}>
       <View style={styles.container}>
@@ -100,9 +130,34 @@ const ModalOrder = ({onPress, visible}: Props) => {
           </View>
           <View style={styles.line} />
           <ScrollView>{renderListOrder}</ScrollView>
+          <View style={styles.totalPayment}>
+            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+              Tổng tiền phải thanh toán
+            </Text>
+            <Text
+              style={{fontSize: 20, fontWeight: 'bold', color: Color.error}}>
+              {renderTotal}
+            </Text>
+          </View>
           <View style={styles.line} />
+          <View style={styles.orderWrapper}>
+            <TouchableOpacity
+              style={styles.btnOrder}
+              activeOpacity={0.8}
+              onPress={handelOrderFood}>
+              <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold'}}>
+                Đặt hàng
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+      <ModalConfig
+        visible={visiable}
+        handelDeleteSuccess={handelDeleteSuccess}
+        handelClose={() => setVisiable(false)}
+        item={itemFood}
+      />
     </Modal>
   );
 };

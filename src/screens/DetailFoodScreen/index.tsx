@@ -18,7 +18,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 
-import {actionListOrder} from '../../reduxs/actions';
+import {actionAddOrder, actionListOrder} from '../../reduxs/actions';
 import {styles} from './style';
 import {Color} from '../../feather/Color';
 import ModalOrder from './ModalOrder';
@@ -41,6 +41,28 @@ const DetailFoodScreen = ({navigation, route}: any) => {
   const handelAddFoodOrder = () => {
     dispatch(actionListOrder(params));
   };
+
+  const itemqwe = [
+    {
+      id: 0,
+      name: 'giang',
+      age: 22,
+      slotFood: 0,
+    },
+    {
+      id: 1,
+      name: 'tai',
+      age: 22,
+      slotFood: 0,
+    },
+    {
+      id: 3,
+      name: 'tuan',
+      age: 22,
+      slotFood: 0,
+    },
+  ];
+
   const renderItem = ({item, index}: any) => {
     return (
       <TouchableOpacity
@@ -73,7 +95,7 @@ const DetailFoodScreen = ({navigation, route}: any) => {
           <Text style={{fontSize: 20, fontWeight: 'bold', color: '#1BAC4B'}}>
             {item?.price}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => dispatch(actionAddOrder(item))}>
             <Octicons name="diff-added" size={25} color={Color.error} />
           </TouchableOpacity>
         </View>
@@ -193,7 +215,11 @@ const DetailFoodScreen = ({navigation, route}: any) => {
           }}
         />
       </ScrollView>
-      <ModalOrder onPress={handelModal} visible={visible} />
+      <ModalOrder
+        onPress={handelModal}
+        visible={visible}
+        navigation={navigation}
+      />
       <TouchableOpacity style={styles.cart} onPress={handelModal}>
         <AntDesign name="inbox" size={40} color={'red'} />
         <View style={styles.amountFood}>

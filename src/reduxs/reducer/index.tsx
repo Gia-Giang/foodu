@@ -16,6 +16,7 @@ import {
   LIST_ORDER_SUCCESS,
   ADD_FOOD_ORDER,
   REMOVE_FOOD_ORDER,
+  ORDER_FOOD,
 } from '../contains';
 import {data} from './data';
 const initState = data;
@@ -36,7 +37,6 @@ const Reducer = (state = initState, actions: any) => {
       return {
         ...state,
         listDataOutStandingFood: [...state.listData],
-        myCart: actions.payload.filter((item: any) => item.isHeart == true),
         listData: actions.payload,
         error: false,
         loading: false,
@@ -49,11 +49,9 @@ const Reducer = (state = initState, actions: any) => {
       rootDataChangeHeart[changeHeart].isHeart =
         !rootDataChangeHeart[changeHeart].isHeart;
 
-      const newMyCart = rootDataChangeHeart;
       return {
         ...state,
         listDataOutStandingFood: [...rootDataChangeHeart],
-        myCart: newMyCart,
       };
     case CHANGE_HEART_FOOD_DEFAIL:
       return {
@@ -91,19 +89,22 @@ const Reducer = (state = initState, actions: any) => {
       return {
         ...state,
         myCart: updateMyCart,
+        listOrder: updateMyCart,
       };
     case LIST_ORDER:
-      const getListOrder = [...state.listOrder, actions.payload];
-      const updateListOrder = getListOrder.reduce((first, last) => {
-        if (first.indexOf(last) === -1) {
-          first.push(last);
-          last['repeat'] = (last['repeat'] || 0) + 1;
-        }
-        return first;
-      }, []);
+      const qwer = state.listOrder.findIndex(
+        (item: any) => item.id == actions.payload.id,
+      );
+      if (qwer !== -1) {
+        state.listOrder[qwer]['repeat'] = state.listOrder[qwer]['repeat'] + 1;
+      } else {
+        actions.payload['repeat'] = 1;
+        state.listOrder.push(actions.payload);
+      }
       return {
         ...state,
-        listOrder: updateListOrder,
+        myCart: [...state.listOrder],
+        listOrder: [...state.listOrder],
       };
     case ADD_FOOD_ORDER:
       const rootData = state.listOrder;
@@ -115,6 +116,7 @@ const Reducer = (state = initState, actions: any) => {
       return {
         ...state,
         listOrder: [...rootData],
+        myCart: [...rootData],
       };
     case REMOVE_FOOD_ORDER:
       const rootDataRemove = state.listOrder;
@@ -126,6 +128,16 @@ const Reducer = (state = initState, actions: any) => {
       return {
         ...state,
         listOrder: [...rootDataRemove],
+        myCart: [...rootDataRemove],
+      };
+    case ORDER_FOOD:
+      const order = actions.payload.map((item: any) => {
+        item['status'] = 'Active';
+        return item;
+      });
+      return {
+        ...state,
+        listOrderTransport: [...order],
       };
     default:
       return {
